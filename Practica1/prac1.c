@@ -18,7 +18,7 @@ void bubble_sort(int A[],long n){
 			{
 				aux=A[j];
 				A[j]=A[j+1];
-				A[j+1]=aux;								
+				A[j+1]=aux;
 			}
 }
 
@@ -33,7 +33,7 @@ void Obubble_sort(int A[], long n){
 				aux=A[j];
 				A[j]=A[j+1];
 				A[j+1]=aux;
-				cambios=1;							
+				cambios=1;
 			}
 		i++;
 	}
@@ -56,7 +56,7 @@ void selection_sort(long A[],long n){
 
 
 void selection_sort(int A[], long n){
-	long p, 
+	long p,
   long temp;
 	for (long k = 0; k < n-1; k++)
 	{
@@ -87,5 +87,3 @@ void shell_sort(long A[], long n){
     gap /=2;
   }
 }
-
-
