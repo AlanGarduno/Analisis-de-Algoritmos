@@ -3,7 +3,7 @@ ESCOM-IPN
 Practica 1: Pruebas a posterior (Algortimos de ordenamiento)
 Analisis de Algoritmos
 Alan Garduño Velazquez
-Ricardo
+Luis Ricardo Tellez Giron Garcia
 3CM3
 24-02-18
 */
