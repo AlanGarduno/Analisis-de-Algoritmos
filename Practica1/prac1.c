@@ -11,37 +11,35 @@ Ricardo
 #include <stdlib.h>
 
 
-void insertion_sort(long A[],long n){
-  long i,k;
-  long aux;
-  for(i = 0; i< n-1; i++){
-    j = i;
-    aux = A[i];
-    while (j>0 && aux<A[j-1]) {
-      A[j]=A[j-1];
-      j--;
+void selection_sort(long A[],long n){
+  long k,p,i,aux;
+  for(k = 0; k <= n-2; k++){
+    p = k;
+    for(i = k+1; i<= n-1; i++){
+      if(A[i] < A[p] ){
+        p = i;
+      }
     }
-    A[j] = aux;
+    aux = A[p];
+    A[p] = A[k];
+    A[k] = aux;
   }
 }
 
 void shell_sort(long A[], long n){
-  long k = n/2;
-  int b;
-  long i;
-  long aux;
-  while (k >= 1) {
-    b = 1;
-    while( b != 0 ){
-      for (i = 0; i >= n-1; i++) {
-        if(A[i-k] > A[i]){
-          aux = A[i];
-          A[i] = A[i-k]
-          A[i-k] = aux;
-          b += 1;
-        }
+  long int gap = n/2;
+  long int inner, outer, swap;
+  while (gap > 0) {
+    for(outer = gap; outer < n; outer++){
+
+      inner = outer;
+      swap = A[inner];
+      while (inner > gap - 1 && A[inner - gap] > swap ) {
+        A[inner] = A[inner - gap];
+        inner -= gap;
       }
+      A[inner] = swap;
     }
-    k = k/2;
+    gap /=2;
   }
 }
