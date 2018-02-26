@@ -13,12 +13,14 @@ Luis Ricardo Tellez Giron Garcia
 #include "ABB/sbt.c"
 
 void elegir_algoritmo(long A[], long n, int op);
+void print(long A[], long n);
 
 int main(int argc, char *argv[]){
   if(argc != 3){
     printf("Faltan argumentos ej: n(100000) con 1<=n<=10,000,000 y el path del archivo fuente (Desktop/numeros.txt) \n");
   }
   else{
+    int op;
     long i = 0;
     char buffer[20];
     FILE *archivo;
@@ -36,15 +38,18 @@ int main(int argc, char *argv[]){
       fgets(buffer,20,archivo);
       aux =  atol(buffer);
       A[i] = aux;
-      printf("%d\n",A[i]);
+      //printf("%d\n",A[i]);
     }
+      printf("Elije el algortimo de tu preferencia\n1.Burbuja\n2.Burbuja Optimizada\n3.Selection Sort\n4.Insertion sort\n5.Shell sort\n6.ABB\n");
+      scanf("%d",&op);
+    elegir_algoritmo(A,n,op);
   }
 
 }
 
 void elegir_algoritmo(long A[], long n, int op){
   int i;
-  printf("Elije el algortimo de tu preferencia\n1.Burbuja\n2.Burbuja Optimizada\n3.Selection Sort\n4.Insertion sort\n5.Shell sort\n6.ABB\n");
+  Nodo *arbol = NULL;
   switch (op) {
     case 1:
       bubble_sort(A,n);
@@ -67,7 +72,6 @@ void elegir_algoritmo(long A[], long n, int op){
       print(A,n);
     break;
     case 6:
-      Nodo *arbol = NULL;
       for(i = 0; i<n; i++){
         insertar(&arbol,A[i]);
       }
