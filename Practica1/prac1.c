@@ -10,7 +10,7 @@ Luis Ricardo Tellez Giron Garcia
 #include <stdio.h>
 #include <stdlib.h>
 
-void bubble_sort(int A[],long n){
+void bubble_sort(long A[],long n){
 	long aux;
 	for (long i = 0; i <= n-2; i++)
 		for (long j = 0; j <= (n-2)-i; j++)
@@ -22,7 +22,7 @@ void bubble_sort(int A[],long n){
 			}
 }
 
-void Obubble_sort(int A[], long n){
+void Obubble_sort(long A[], long n){
 	char cambios=1;
 	long i=0,aux;
 	while(i < n-1 && cambios != 0){
@@ -39,6 +39,19 @@ void Obubble_sort(int A[], long n){
 	}
 }
 
+void insertion_sort(long A[], long n){
+	long int i,j,temp;
+	for(i = 0; i <= n-1; i++){
+		j = i;
+		while (j >0 && A[j] < A[j-1]) {
+			temp = A[j];
+			A[j] = A[j-1];
+			A[j-1] = temp;
+			j--;
+		}
+	}
+}
+
 void selection_sort(long A[],long n){
   long k,p,i,aux;
   for(k = 0; k <= n-2; k++){
@@ -52,22 +65,6 @@ void selection_sort(long A[],long n){
     A[p] = A[k];
     A[k] = aux;
   }
-}
-
-
-void selection_sort(int A[], long n){
-	long p,
-  long temp;
-	for (long k = 0; k < n-1; k++)
-	{
-		p=k;
-		for (long i = k+1; i < n; i++)
-			if (A[i] < A[p])
-				p=i;
-		temp=A[p];
-		A[p]=A[k];
-		A[k]=temp;
-	}
 }
 
 void shell_sort(long A[], long n){
