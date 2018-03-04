@@ -9,8 +9,10 @@ Luis Ricardo Tellez Giron Garcia
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include "tiempo/tiempo.h"
 #include "prac1.c"
 #include "ABB/sbt.c"
+
 
 void elegir_algoritmo(long A[], long n, int op);
 void print(long A[], long n);
@@ -33,7 +35,6 @@ int main(int argc, char *argv[]){
     }
     long r = n;
     long aux;
-    printf("Leyendo datos...\n");
     for(i = 0; i<n;i++){
       fgets(buffer,20,archivo);
       aux =  atol(buffer);
@@ -41,6 +42,10 @@ int main(int argc, char *argv[]){
       //printf("%d\n",A[i]);
     }
     elegir_algoritmo(A,n,op);
+    printf("%d.-\t%ld\t",op,n);
+    printf("%.10f\t%.10f\t%.10f\t%.10f\n", wtime1-wtime0, utime1-utime0, stime1-stime0, 100.0 * (utime1 - utime0 + stime1 - stime0) / (wtime1 - wtime0));
+    if(op == 6)
+      printf("\n");
   }
 
 }
@@ -51,29 +56,38 @@ void elegir_algoritmo(long A[], long n, int op){
   switch (op) {
     case 1:
       bubble_sort(A,n);
-      print(A,n);
+      //print(A,n);
     break;
     case 2:
       Obubble_sort(A,n);
-      print(A,n);
+      //print(A,n);
     break;
     case 3:
       selection_sort(A,n);
-      print(A,n);
+      //print(A,n);
     break;
     case 4:
       insertion_sort(A,n);
-      print(A,n);
+      //print(A,n);
     break;
     case 5:
       shell_sort(A,n);
-      print(A,n);
+      //print(A,n);
     break;
     case 6:
       for(i = 0; i<n; i++){
         insertar(&arbol,A[i]);
       }
-      inOrden(arbol);
+      //******************************************************************  
+      //Iniciar el conteo del tiempo para las evaluaciones de rendimiento
+      //******************************************************************  
+      uswtime(&utime0, &stime0, &wtime0);
+      inOrden(arbol,A);
+      //******************************************************************  
+      //Evaluar los tiempos de ejecución 
+      //******************************************************************
+      uswtime(&utime1, &stime1, &wtime1);
+      //print(A,n);
     break;
 
   }
@@ -82,6 +96,6 @@ void elegir_algoritmo(long A[], long n, int op){
 void print(long A[], long n){
   int i = 0;
   for(int i = 0; i<n; i++){
-    printf("%d\n",A[i]);
+    printf("%ld\n",A[i]);
   }
 }
