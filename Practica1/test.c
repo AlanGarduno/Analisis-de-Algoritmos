@@ -6,12 +6,24 @@ Alan Garduño Velazquez
 Luis Ricardo Tellez Giron Garcia
 3CM3
 24-02-18
+Compilacion: gcc test.c
+Ejecucion:
+Windows:a  1000 nums.txt 2, donde 1000 es n nums.txt es el archivo de donde se obtienen los datos y 2 es el algortomo a usar en este caso Obs
+OSX/Linux:./a 1000 nums.txt 2, idem
+Opciones de algortimos a seleccionar a traves de parametro:
+1.Bubble sort
+2.Optimized bubble sort
+3.Selection soort
+4.Insertion sort
+5.Shell sort
+6.ABB
 */
 #include <stdio.h>
 #include <stdlib.h>
 #include "tiempo/tiempo.h"
 #include "prac1.c"
 #include "ABB/sbt.c"
+#include "tiempo/tiempo.c"
 
 
 void elegir_algoritmo(long A[], long n, int op);
@@ -56,26 +68,26 @@ void elegir_algoritmo(long A[], long n, int op){
   switch (op) {
     case 1:
       bubble_sort(A,n);
-      //print(A,n);
+      print(A,n);
     break;
     case 2:
       Obubble_sort(A,n);
-      //print(A,n);
+      print(A,n);
     break;
     case 3:
       selection_sort(A,n);
-      //print(A,n);
+      print(A,n);
     break;
     case 4:
       insertion_sort(A,n);
-      //print(A,n);
+      print(A,n);
     break;
     case 5:
       shell_sort(A,n);
-      //print(A,n);
+      print(A,n);
     break;
     case 6:
-      for(i = 0; i<n; i++){
+      for(i = 0; i<n; i++){ //insertando los datos en el arreglo 
         insertar(&arbol,A[i]);
       }
       //******************************************************************  
@@ -93,6 +105,9 @@ void elegir_algoritmo(long A[], long n, int op){
   }
 }
 
+
+/*Funcion que imprime un arrgelo
+Recibe: A un puntero a un arreglo y n la longitud del mismo*/
 void print(long A[], long n){
   int i = 0;
   for(int i = 0; i<n; i++){
