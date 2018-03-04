@@ -3,6 +3,7 @@
 #include "sbt.h"
 
 
+
 Nodo* crearNodo(long int n){
   Nodo* nuevoNodo = (Nodo*)malloc(sizeof(Nodo));
   nuevoNodo->valor = n;
@@ -32,12 +33,13 @@ void insertar(Nodo **arbol, long int valor){
   }
 }
 
-void inOrden(Nodo *arbol){
-  if(arbol == NULL)
-      printf(" - ");
+void inOrden(Nodo *arbol, long A[]){
+  static int i=0;
+
+  if(arbol == NULL);
   else{
-    inOrden(arbol->izq);
-    printf("%d\n",arbol->valor);
-    inOrden(arbol->der);
+    inOrden(arbol->izq,A);
+    A[i++]=arbol->valor;
+    inOrden(arbol->der,A);
   }
 }
