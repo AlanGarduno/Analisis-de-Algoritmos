@@ -16,11 +16,11 @@ void elegir_algoritmo(long A[], long n, int op);
 void print(long A[], long n);
 
 int main(int argc, char *argv[]){
-  if(argc != 3){
-    printf("Faltan argumentos ej: n(100000) con 1<=n<=10,000,000 y el path del archivo fuente (Desktop/numeros.txt) \n");
+  if(argc != 4){
+    printf("Faltan argumentos ej: n(100000) con 1<=n<=10,000,000, el path del archivo fuente (Desktop/numeros.txt) y el algoritmo a ejecutar \n");
   }
   else{
-    int op;
+    int op=atoi(argv[3]);
     long i = 0;
     char buffer[20];
     FILE *archivo;
@@ -40,8 +40,6 @@ int main(int argc, char *argv[]){
       A[i] = aux;
       //printf("%d\n",A[i]);
     }
-      printf("Elije el algortimo de tu preferencia\n1.Burbuja\n2.Burbuja Optimizada\n3.Selection Sort\n4.Insertion sort\n5.Shell sort\n6.ABB\n");
-      scanf("%d",&op);
     elegir_algoritmo(A,n,op);
   }
 
