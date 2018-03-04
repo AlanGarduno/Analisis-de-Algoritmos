@@ -17,17 +17,10 @@ void print(long A[], long n);
 
 int main(int argc, char *argv[]){
   if(argc != 4){
-<<<<<<< HEAD
     printf("Faltan argumentos ej: n(100000) con 1<=n<=10,000,000 y el path del archivo fuente (Desktop/numeros.txt)  op: Que algoritmo se ejecutara\n");
   }
   else{
     int op = atoi(argv[3]);
-=======
-    printf("Faltan argumentos ej: n(100000) con 1<=n<=10,000,000, el path del archivo fuente (Desktop/numeros.txt) y el algoritmo a ejecutar \n");
-  }
-  else{
-    int op=atoi(argv[3]);
->>>>>>> 80e21a805070498219a38915c97b5151a467cc6a
     long i = 0;
     char buffer[20];
     FILE *archivo;
