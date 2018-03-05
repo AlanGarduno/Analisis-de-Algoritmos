@@ -28,35 +28,41 @@ Opciones de algortimos a seleccionar a traves de parametro:
 //Variables globales para la medicion del tiempo de ejecucion
 double utime0, stime0, wtime0,utime1, stime1, wtime1;
 
+/*Funcion para eleegir el algortimo de ordenamiento
+Recibe: A el arrgelo de numeros de tipo long, n que es el tamaño del arreglo A, y op que es una varible para determina que
+algoritmo ejecutar*/
 void elegir_algoritmo(long A[], long n, int op);
+
+/*Funcion que imprime un arrgelo
+Recibe: A un puntero a un arreglo y n la longitud del mismo*/
 void print(long A[], long n);
 
 int main(int argc, char *argv[]){
-  if(argc != 4){
+  if(argc != 4){ //Se validan si se ingresaron los argumentos suficientes
     printf("Faltan argumentos ej: n(100000) con 1<=n<=10,000,000 y el path del archivo fuente (Desktop/numeros.txt)  op: Que algoritmo se ejecutara\n");
   }
   else{
-    int op = atoi(argv[3]);
-    long i = 0;
-    char buffer[20];
-    FILE *archivo;
+    int op = atoi(argv[3]); //Se convierte a entero el argument0 4
+    long i = 0;// variable auxiliar
+    char buffer[20];//Buffer 
+    FILE *archivo; //Puntero a archivo
     long n = atol(argv[1]); //Se convierte el primer argumento n a long con la funcion atol
     long *A = (long*)calloc(n,sizeof(long)); //Se crea el arreglo dinamico de n elementos
-    archivo = fopen(argv[2],"r");
-    if(archivo == NULL){
-      printf("No fue posible abrir el archivo\n");
+    archivo = fopen(argv[2],"r"); // Se abre el archivo en modo lectura
+    if(archivo == NULL){ //Se valida si fue posible abrir el archivo
+      printf("No fue posible abrir el archivo\n"); 
       exit(1);
     }
     long r = n;
     long aux;
     printf("Leyendo datos...\n");
-    for(i = 0; i<n;i++){
+    for(i = 0; i<n;i++){ //Se lleen los datos del archivo linea por liena
       fgets(buffer,20,archivo);
       aux =  atol(buffer);
       A[i] = aux;
       //printf("%d\n",A[i]);
     }
-    elegir_algoritmo(A,n,op);
+    elegir_algoritmo(A,n,op); // Se ejecuta la fucnion elejir_algoritmo
   }
 
 }
@@ -190,8 +196,7 @@ void elegir_algoritmo(long A[], long n, int op){
 }
 
 
-/*Funcion que imprime un arrgelo
-Recibe: A un puntero a un arreglo y n la longitud del mismo*/
+
 void print(long A[], long n){
   int i = 0;
   for(int i = 0; i<n; i++){
