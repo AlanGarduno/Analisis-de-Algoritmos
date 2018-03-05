@@ -20,13 +20,16 @@ Opciones de algortimos a seleccionar a traves de parametro:
 */
 #include <stdio.h>
 #include <stdlib.h>
-#include "tiempo/tiempo.h"
 #include "prac1.c"
 #include "ABB/sbt.c"
-#include "tiempo/tiempo.c"
 
-
+/*Funcion para elegir el algortimo de ordenamiento
+Recibe: A el arrgelo de numeros de tipo long, n que es el tamaño del arreglo A, y op que es una varible para determina que
+algoritmo ejecutar*/
 void elegir_algoritmo(long A[], long n, int op);
+
+/*Funcion que imprime un arrgelo
+Recibe: A un puntero a un arreglo y n la longitud del mismo*/
 void print(long A[], long n);
 
 int main(int argc, char *argv[]){
@@ -68,23 +71,23 @@ void elegir_algoritmo(long A[], long n, int op){
   switch (op) {
     case 1:
       bubble_sort(A,n);
-      print(A,n);
+      //print(A,n);
     break;
     case 2:
       Obubble_sort(A,n);
-      print(A,n);
+      //print(A,n);
     break;
     case 3:
       selection_sort(A,n);
-      print(A,n);
+      //print(A,n);
     break;
     case 4:
       insertion_sort(A,n);
-      print(A,n);
+      //print(A,n);
     break;
     case 5:
       shell_sort(A,n);
-      print(A,n);
+      //print(A,n);
     break;
     case 6:
       for(i = 0; i<n; i++){ //insertando los datos en el arreglo 

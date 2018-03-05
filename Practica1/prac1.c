@@ -9,6 +9,7 @@ Luis Ricardo Tellez Giron Garcia
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include "tiempo/tiempo.c"
 
 
 double utime0, stime0, wtime0,utime1, stime1, wtime1; //Variables para medición de tiempos
@@ -31,7 +32,7 @@ void bubble_sort(long A[],long n){
 	//******************************************************************	
 	//Evaluar los tiempos de ejecución 
 	//******************************************************************
-	uswtime(&utime1, &stime1, &wtime1)M
+	uswtime(&utime1, &stime1, &wtime1);
 
 }
 

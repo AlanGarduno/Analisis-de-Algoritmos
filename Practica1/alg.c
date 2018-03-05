@@ -6,7 +6,7 @@ Alan Garduño Velazquez
 Luis Ricardo Tellez Giron Garcia
 3CM3
 24-02-18
-Compilacion: gcc test.c
+Compilacion: gcc alg.c
 Ejecucion:
 Windows:a  1000 nums.txt 2, donde 1000 es n nums.txt es el archivo de donde se obtienen los datos y 2 es el algortomo a usar en este caso Obs
 OSX/Linux:./a 1000 nums.txt 2, idem
@@ -22,13 +22,12 @@ Opciones de algortimos a seleccionar a traves de parametro:
 #include <stdlib.h>
 #include "prac1.c"
 #include "ABB/sbt.c"
-#include "tiempo/tiempo.c"
 
 
 //Variables globales para la medicion del tiempo de ejecucion
 double utime0, stime0, wtime0,utime1, stime1, wtime1;
 
-/*Funcion para eleegir el algortimo de ordenamiento
+/*Funcion para elegir el algortimo de ordenamiento
 Recibe: A el arrgelo de numeros de tipo long, n que es el tamaño del arreglo A, y op que es una varible para determina que
 algoritmo ejecutar*/
 void elegir_algoritmo(long A[], long n, int op);
@@ -55,8 +54,8 @@ int main(int argc, char *argv[]){
     }
     long r = n;
     long aux;
-    printf("Leyendo datos...\n");
-    for(i = 0; i<n;i++){ //Se lleen los datos del archivo linea por liena
+    //printf("Leyendo datos...\n");
+    for(i = 0; i<n;i++){ //Se leen los datos del archivo linea por liena
       fgets(buffer,20,archivo);
       aux =  atol(buffer);
       A[i] = aux;
@@ -175,7 +174,7 @@ void elegir_algoritmo(long A[], long n, int op){
         insertar(&arbol,A[i]);
       }
       uswtime(&utime0, &stime0, &wtime0); //Se comienza a medir el tiempo
-      inOrden(arbol); //Recorrido en inOrden del arbol binario
+      inOrden(arbol,A); //Recorrido en inOrden del arbol binario
       uswtime(&utime1, &stime1, &wtime1); // Se Evaluan los tiempos
 	    printf("\n");
 	    printf("real (Tiempo total)  %.10f s\n",  wtime1 - wtime0);
