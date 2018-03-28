@@ -84,11 +84,11 @@ void* buscarArbol(void *p){
   Nodo *a = pa->arbol;
     while(a != NULL){
     if(pa->n == a->valor)
-      return (int*)1;
+      printf("El valor %ld se encuentra en la coleccion\n",pa->n);
     if(pa->n > a->valor)
       a = a->der;
     else
       a = a->izq;
   }
-  return (int*)0;
+  printf("El valor %ld no se encuentra en la coleccion\n",pa->n);
 }

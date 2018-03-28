@@ -1,13 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <pthread.h>
 #include "prac2.h"
 
 typedef struct Param
 {
 	long n;
 	long dato;
-	long A[];
+	long *A;
 	
 }PARAM;
 
@@ -47,11 +46,11 @@ void *bLineal(void* param){
 		for ( i = 0; i < p->n;i++)
 	{
 		if(p->dato == p->A[i]){
-			printf("El dato %ld se encuenta en la coleccion",p->dato);
-			return;
+			printf("El dato %ld se encuenta en la coleccion\n",p->dato);
+			return (void*)1;
 		}
 	}
-	printf("El dato %ld no se encuenta en la coleccion",p->dato);
+	printf("El dato %ld no se encuenta en la coleccion\n",p->dato);
 
 
 }
@@ -61,8 +60,8 @@ void *bBinaria(void* param){
 	while(inf <= sup){
 		centro = ((sup-inf)/2)+inf;
 		if(p->A[centro] == p->dato){
-			printf("El dato %ld se encuenta en la coleccion",p->dato);
-			return;
+			printf("El dato %ld se encuenta en la coleccion\n",p->dato);
+			return (void*)1;
 		}
 		else if(p->dato < p->A[centro]){
 			sup= centro-1;
@@ -71,5 +70,5 @@ void *bBinaria(void* param){
 			inf = centro+1;
 		}
 	}
-	printf("El dato %ld no se encuenta en la coleccion",p->dato);
+	printf("El dato %ld no se encuenta en la coleccion\n",p->dato);
 }

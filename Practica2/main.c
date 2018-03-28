@@ -9,6 +9,9 @@ Luis Ricardo Tellez Giron Garcia
 Fecha de elaboracion: 17.03.18
 Version: 1
 
+
+Compilacion: gcc main.c -lpthread
+
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -65,9 +68,9 @@ int main(int argc, char const *argv[])
 }
 
 void selc_algortimo(long* A,long n, long dato, int h, int op){
-	PARAM *p;
-	PA *pa;
-	pthread_t *threads;
+	PARAM *p = (PARAM*)malloc(sizeof(PARAM));
+	PA *pa = (PA*)malloc(sizeof(PA));
+	pthread_t *threads = NULL;
 	Nodo *arbol = NULL;
 	long i;
 	switch(op){
@@ -93,7 +96,7 @@ void selc_algortimo(long* A,long n, long dato, int h, int op){
 					}
 				}
 
-				for (i=1; i<NumThreads; i++) pthread_join (thread[i], NULL);
+				for (i=1; i<2; i++) pthread_join (threads[i], NULL);
 			}
 		break;
 		case 2:
@@ -118,7 +121,7 @@ void selc_algortimo(long* A,long n, long dato, int h, int op){
 					}
 				}
 
-				for (i=1; i<NumThreads; i++) pthread_join (thread[i], NULL);
+				for (i=1; i< 2; i++) pthread_join (threads[i], NULL);
 			}
 		break;
 		case 3:
@@ -145,7 +148,7 @@ void selc_algortimo(long* A,long n, long dato, int h, int op){
 					}
 				}
 
-				for (i=1; i<NumThreads; i++) pthread_join (thread[i], NULL);
+				for (i=1; i< 2; i++) pthread_join (threads[i], NULL);
 			}
 		break; 
 	}
