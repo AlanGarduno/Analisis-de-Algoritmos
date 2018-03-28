@@ -14,26 +14,27 @@ Version: 1
 #include <stdlib.h>
 #include "abb/abb.c"
 #include "prac2.c"
+#include <pthread.h>
 
 void selc_algortimo(long* A,long n, long dato, int h, int op);
 
 int main(int argc, char const *argv[])
 {
-	if(argv < 5)
+	if(argc < 5)
 	{
-		printf("Faltan argumentos: 
-				1 -> path del data set
-				2 -> Numero a buscar 
-				3 -> Tamaño de n 
-				4 -> Algortmo a utilizar 
-				5 -> Con/sin hilos. 
-				Ej nums.txt 1000 10000 2 0 
-				Donde: 
-				nums.txt es el path del data set
-				1000 es el numero a buscar
-				10000 es el tamaño de n
-				2 es el algortimo a usar
-				y 0 es que no se usaran hilos\n");
+		printf("Faltan argumentos:\n"); 
+		printf("1 -> path del data set\n");
+		printf("2 -> Numero a buscar\n");
+		printf("3 -> Tamaño de n\n"); 
+		printf("4 -> Algortmo a utilizar\n"); 
+		printf("5 -> Con/sin hilos.\n ");
+		printf("Ej nums.txt 1000 10000 2 0"); 
+		printf("Donde:\n ");
+		printf("nums.txt es el path del data set\n");
+		printf("1000 es el numero a buscar\n");
+		printf("10000 es el tamaño de n\n");
+		printf("2 es el algortimo a usar\n");
+		printf("y 0 es que no se usaran hilos\n");
 				exit(0);
 	}
 	long i = 0;
@@ -64,29 +65,60 @@ int main(int argc, char const *argv[])
 }
 
 void selc_algortimo(long* A,long n, long dato, int h, int op){
+	PARAM *p;
+	PA *pa;
+	pthread_t *threads;
 	Nodo *arbol = NULL;
 	long i;
 	switch(op){
 		case 1:
 			if(h == 0){
 				if(busquedaLineal(A,n,dato))
-					printf("El dato %d se encuentra en la coleccion\n",dato);
+					printf("El dato %ld se encuentra en la coleccion\n",dato);
 				else
-					printf("El dato %d no se encuentra en la coleccion\n",dato);
+					printf("El dato %ld no se encuentra en la coleccion\n",dato);
 			}
 			else{
-				//Ejecucion con hilos
+				threads = calloc(2,sizeof(pthread_t));
+				p->n = n;
+				p->dato = dato;
+				p->A = A;
+
+				for (i = 0; i < 2; ++i)
+				{
+					if (pthread_create(&threads[i],NULL,bLineal,(void*)p) != 0)
+					{
+						perror("El thread no  pudo crearse");
+						exit(-1);
+					}
+				}
+
+				for (i=1; i<NumThreads; i++) pthread_join (thread[i], NULL);
 			}
 		break;
 		case 2:
 			if(h == 0){
 				if(busquedaBinaria(A,n,dato))
-					printf("El dato %d se encuentra en la coleccion\n",dato);
+					printf("El dato %ld se encuentra en la coleccion\n",dato);
 				else
-					printf("El dato %d no se encuentra en la coleccion\n",dato);
+					printf("El dato %ld no se encuentra en la coleccion\n",dato);
 			}
 			else{
-				//Ejecucion con hilos
+				threads = calloc(2,sizeof(pthread_t));
+				p->n = n;
+				p->dato = dato;
+				p->A = A;
+
+				for (i = 0; i < 2; ++i)
+				{
+					if (pthread_create(&threads[i],NULL,bBinaria,(void*)p) != 0)
+					{
+						perror("El thread no  pudo crearse");
+						exit(-1);
+					}
+				}
+
+				for (i=1; i<NumThreads; i++) pthread_join (thread[i], NULL);
 			}
 		break;
 		case 3:
@@ -95,12 +127,25 @@ void selc_algortimo(long* A,long n, long dato, int h, int op){
 
 			if(h == 0){
 				if(buscar(arbol,dato))
-					printf("El dato %d se encuentra en la coleccion\n",dato);
+					printf("El dato %ld se encuentra en la coleccion\n",dato);
 				else
-					printf("El dato %d no se encuentra en la coleccion\n",dato);
+					printf("El dato %ld no se encuentra en la coleccion\n",dato);
 			}
 			else{
-				//Ejecucion con hilos
+				threads = calloc(2,sizeof(pthread_t));
+				pa->arbol = arbol;
+				pa->n = dato;
+
+				for (i = 0; i < 2; ++i)
+				{
+					if (pthread_create(&threads[i],NULL,buscarArbol,(void*)pa) != 0)
+					{
+						perror("El thread no  pudo crearse");
+						exit(-1);
+					}
+				}
+
+				for (i=1; i<NumThreads; i++) pthread_join (thread[i], NULL);
 			}
 		break; 
 	}

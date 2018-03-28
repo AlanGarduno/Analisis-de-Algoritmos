@@ -9,12 +9,6 @@ typedef struct Nodo{
   struct Nodo *izq,*der;
 }Nodo;
 
-typedef struct PA
-{
-	Nodo *arbol;
-	long n;
-}PA;
-
 
 typedef Nodo Arbol;
 /*Prototipo de funciion de crearNodo que retorna un puntero de tipo Nodo, recibe un long n*/

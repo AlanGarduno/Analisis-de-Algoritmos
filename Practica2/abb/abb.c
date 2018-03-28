@@ -2,6 +2,12 @@
 #include <stdio.h>
 #include "abb.h"
 
+typedef struct PA
+{
+  Nodo *arbol;
+  long n;
+}PA;
+
 /*Funcion que crea un nodo a partir de un entero n
 Recibe: un long int n
 Devuelve: Un puntero al nodo creado
@@ -75,14 +81,14 @@ int buscar(Nodo* a, long n){
 
 void* buscarArbol(void *p){
   PA *pa = (PA*)p;
-  Nodo *a = pa.arbol;
+  Nodo *a = pa->arbol;
     while(a != NULL){
-    if(pa.n == a->valor)
-      return 1;
-    if(pa.n > a->valor)
+    if(pa->n == a->valor)
+      return (int*)1;
+    if(pa->n > a->valor)
       a = a->der;
     else
       a = a->izq;
   }
-  return 0;
+  return (int*)0;
 }
