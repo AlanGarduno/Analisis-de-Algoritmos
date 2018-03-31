@@ -12,12 +12,18 @@ Version: 1
 
 Compilacion: gcc main.c -lpthread
 
+Ejecucion (Ejemplo): ./a.out nums.txt 388958 8000 3 1
+
+
 */
 #include <stdio.h>
 #include <stdlib.h>
 #include "abb/abb.c"
 #include "prac2.c"
 #include <pthread.h>
+#include "Tiempo/tiempo.c"
+
+double utime0, stime0, wtime0,utime1, stime1, wtime1; //Variables para medir el tiempo
 
 void selc_algortimo(long* A,long n, long dato, int h, int op);
 
@@ -76,16 +82,21 @@ void selc_algortimo(long* A,long n, long dato, int h, int op){
 	switch(op){
 		case 1:
 			if(h == 0){
+				uswtime(&utime0, &stime0, &wtime0);
 				if(busquedaLineal(A,n,dato))
 					printf("El dato %ld se encuentra en la coleccion\n",dato);
 				else
 					printf("El dato %ld no se encuentra en la coleccion\n",dato);
+
+				uswtime(&utime1, &stime1, &wtime1);
 			}
 			else{
 				threads = calloc(2,sizeof(pthread_t));
 				p->n = n;
 				p->dato = dato;
 				p->A = A;
+
+				uswtime(&utime0, &stime0, &wtime0);
 
 				for (i = 0; i < 2; ++i)
 				{
@@ -97,20 +108,27 @@ void selc_algortimo(long* A,long n, long dato, int h, int op){
 				}
 
 				for (i=1; i<2; i++) pthread_join (threads[i], NULL);
+
+				uswtime(&utime1, &stime1, &wtime1);
 			}
 		break;
 		case 2:
 			if(h == 0){
+				uswtime(&utime0, &stime0, &wtime0);
 				if(busquedaBinaria(A,n,dato))
 					printf("El dato %ld se encuentra en la coleccion\n",dato);
 				else
 					printf("El dato %ld no se encuentra en la coleccion\n",dato);
+
+				uswtime(&utime1, &stime1, &wtime1);
 			}
 			else{
 				threads = calloc(2,sizeof(pthread_t));
 				p->n = n;
 				p->dato = dato;
 				p->A = A;
+
+				uswtime(&utime0, &stime0, &wtime0);
 
 				for (i = 0; i < 2; ++i)
 				{
@@ -122,6 +140,8 @@ void selc_algortimo(long* A,long n, long dato, int h, int op){
 				}
 
 				for (i=1; i< 2; i++) pthread_join (threads[i], NULL);
+
+				uswtime(&utime1, &stime1, &wtime1);
 			}
 		break;
 		case 3:
@@ -129,15 +149,20 @@ void selc_algortimo(long* A,long n, long dato, int h, int op){
 				insertar(&arbol,A[i]);
 
 			if(h == 0){
+				uswtime(&utime0, &stime0, &wtime0);
 				if(buscar(arbol,dato))
 					printf("El dato %ld se encuentra en la coleccion\n",dato);
 				else
 					printf("El dato %ld no se encuentra en la coleccion\n",dato);
+
+				uswtime(&utime1, &stime1, &wtime1);
 			}
 			else{
 				threads = calloc(2,sizeof(pthread_t));
 				pa->arbol = arbol;
 				pa->n = dato;
+
+				uswtime(&utime0, &stime0, &wtime0);
 
 				for (i = 0; i < 2; ++i)
 				{
@@ -149,6 +174,8 @@ void selc_algortimo(long* A,long n, long dato, int h, int op){
 				}
 
 				for (i=1; i< 2; i++) pthread_join (threads[i], NULL);
+
+				uswtime(&utime1, &stime1, &wtime1);
 			}
 		break; 
 	}
