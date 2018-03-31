@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "abb.h"
 
+/*Estructura para pasar los parametros en los proceso ligeros*/
 typedef struct PA
 {
   Nodo *arbol;
@@ -30,10 +31,6 @@ void destruirNodo(Nodo *nodo){
   free(nodo); //Se libera la memoria que ocupaba el nodo
 }
 
-/*Funcion que inserta un nodo
-Recibe: La direccion de memoria de un puntero a un arbol y un long int n
-Devuelve: Nada
-*/
 
 /*Funcion que inserta un nodo
 Recibe: La direccion de memoria de un puntero a un arbol y un long int n
@@ -64,20 +61,27 @@ void inOrden(Nodo *arbol, long A[]){
     A[i++]=arbol->valor; //Se va ordenando el arreglo 
     inOrden(arbol->der,A);// Recorre el arbol por su lado derecho hasta llegar a un nodo hoja
   }
+} 
+/* implementacion de la Funcion buscar en un abb
+Recibe:Puntero a la raiz de un arbol y n que es el numero a buscar en el arbol
+Retorna: 1 si encuentra a n y 0 si no es asi.
+*/
+int buscar(Nodo* a, long n){
+	Nodo *arbol = a; //Puntero auxiliar a la raiz del arbol bb
+	while(arbol != NULL){ //Mietras la raiz sea diferente de nulo
+		if(n == arbol->valor) //Si n es igual al valor de la raiz se regresa 1
+			return 1;
+		if(n > arbol->valor) //Si n es mayor al valor del arbol 
+			arbol = arbol->der; //Se busca en la parte derecha del arbol
+		else
+			arbol = arbol->izq; //Si no es asi se busca en la parte izquierda del arbol
+	}
+	return 0;//Si en ningun momento se cumple la condición significa que n no se encuenta en el arbol
+            //Por lo tanto se retorna 0 
 }
 
-int buscar(Nodo* a, long n){
-	Nodo *arbol = a;
-	while(arbol != NULL){
-		if(n == arbol->valor)
-			return 1;
-		if(n > arbol->valor)
-			arbol = arbol->der;
-		else
-			arbol = arbol->izq;
-	}
-	return 0;
-}
+
+/*Variacion de la funcion anterior para funcionar con procesos ligeros*/
 
 void* buscarArbol(void *p){
   PA *pa = (PA*)p;
