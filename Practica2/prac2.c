@@ -22,27 +22,22 @@ int busquedaLineal(long A[], long n, long dato){
 	long i; //variable auxiliar para el ciclo 
 	for ( i = 0; i < n;i++) 
 	{
-<<<<<<< Updated upstream
+
 		if(dato == A[i]){ //Condicional que compara el valor que se esta buscando y el valor
 						 //Actual de A
 			return 1; // Se retorna 1 si la condicion se cumple
-=======
 		if(dato == A[i]){
 			return 1;
->>>>>>> Stashed changes
 		}
 	}
 	return 0; //se retorna 0 si no es asi.
 }
 
-<<<<<<< Updated upstream
 
 /*Implementacion del algortimo de busqueda binaria
 recibe: Arreglo A, n que es el tamaño de a y dato que es el dato a buscar en A
 retorna:  1 si dato se encuentra en A, 0 si no es asi.
 */
-=======
->>>>>>> Stashed changes
 int busquedaBinaria(long A[], long n, long dato){
 	long centro, inf=0, sup= n-1; //Variables auxiliares para el uso
 	while(inf <= sup){ //Cilco que se repite mientras se cumpla la condicion inf <= sup
