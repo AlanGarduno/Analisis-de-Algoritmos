@@ -1,0 +1,16 @@
+.header{
+    color: white;
+}
+
+.back{
+    background-size: 1500px;
+    background-image:url(img2.jpg);
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 40px;
+    color: white;
+  }
