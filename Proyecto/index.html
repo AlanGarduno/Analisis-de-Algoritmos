@@ -8,10 +8,36 @@
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
      crossorigin="anonymous">
      <link rel="stylesheet" href="style.css">
+     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <title>Dijkstra</title>
 </head>
 <body class="back">
-    <section  >
+    <section class="sectionToggleQ text-center toggleSection" id="sectionQ">
+        <div class="container">
+        <h2 class="h2">¿Qué es?</h2>
+            <p class="p">
+                Que es el Algortimo de Dijkstra
+            </p>
+        </div>
+    </section>
+    <section class="sectionToggleC text-center toggleSection" id="sectionC">
+            <div class="container">
+            <h2 class="h2">¿Como funciona?</h2>
+                <p class="p">
+                    Como funciona el Algortimo de Dijkstra
+                </p>
+            </div>
+    </section>
+
+    <section class="sectionToggleD text-center toggleSection" id="sectionC">
+            <div class="container">
+            <h2 class="h2">Demostración</h2>
+                <p class="p">
+                    Demostración del Algortimo de Dijkstra
+                </p>
+            </div>
+    </section>
+    <section id="main">
         <div class="container ">
             <div class="container header">
                 <h1 class="h1">Algoritmo de Dijkstra</h1>
@@ -25,9 +51,9 @@
                 </div>
 
                 <div class="container-fluid text-center header">
-                        <button id="btnQ" type="button" class="btn btn-outline-success btn-lg" onclick="showInfo()">¿Qué es?</button>
+                        <button id="btnQ" type="button" class="btn btn-outline-success btn-lg" >¿Qué es?</button>
                         <button id="btnC" type="button" class="btn btn-outline-warning btn-lg ">¿Cómo funciona?</button>
-                        <button id="btnD" type="button" class="btn btn-outline-danger btn-lg ">Demostración<noscript></noscript></button>
+                        <button id="btnD" type="button" class="btn btn-outline-danger btn-lg ">Demostración</button>
                 </div>
         </div>
     </section>
@@ -35,16 +61,12 @@
         <h6 class="h6">Instituto Politécnico Nacional</h6>
         <h6 class="h6">Escuela Superior de Cómputo</h6>
     </footer>
-
-<script src="info.js"></script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" 
-     crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
     integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" 
      crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
      crossorigin="anonymous"></script>
+<script src="info.js"></script>
 </body>
 </html>

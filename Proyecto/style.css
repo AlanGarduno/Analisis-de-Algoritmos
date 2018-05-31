@@ -14,3 +14,11 @@
     height: 40px;
     color: white;
   }
+
+  .toggleSection{
+      display: none;
+      color: black;
+      height: 100vh;
+      width: 100%;
+      background-color: white;
+  }
