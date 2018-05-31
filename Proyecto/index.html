@@ -12,11 +12,15 @@
     <title>Dijkstra</title>
 </head>
 <body class="back">
-    <section class="sectionToggleQ text-center toggleSection" id="sectionQ">
+    <section class="sectionToggleQ text-left toggleSection" id="sectionQ">
         <div class="container">
         <h2 class="h2">¿Qué es?</h2>
             <p class="p">
-                Que es el Algortimo de Dijkstra
+                Es un algoritmo que nos permite encontrar el camino minimo en un grafo, dado un vertice
+                de origen hacia el resto de los vertices del grafo. Debe su nombre al cómputologo Edsger
+                Dijkstra que lo describió en 1959. 
+                <br>
+                <img class="img-fluid mx-auto rounded mx-auto d-block" src="d.jpg" >
             </p>
         </div>
     </section>
@@ -24,7 +28,25 @@
             <div class="container">
             <h2 class="h2">¿Como funciona?</h2>
                 <p class="p">
-                    Como funciona el Algortimo de Dijkstra
+                    Supongamos que tenemos un grafo de N nodos no aislados.
+                    Sea X el nodo inicial.
+                    Un vector D de tamaño N guardara las distancias desde X hacia el resto de los nodos.
+                    <br>
+                    1. Se inicializan todas las distancias a un valor infinito relativo, ya que no es posible calcularlas,
+                    exceptuando a X, cuya distancia es cero, debido a que la distancia de X a X es 0.
+                    <br>
+                    2. Sea A = X (se tomará a como nodo inicial).
+                    <br>
+                    3. Se recorren todos los nodos adyacentes a A.
+                    <br>
+                    4. Se calcula la distancia desde el nodo A hacia sus adyacentes, guardando en D las menores.
+                    <br>
+                    5. Se termina con el nodo A.
+                    <br>
+                    6. Se toma como proximo nodo actual el menor valor de D y se regresa al paso tres mientras existan
+                    nodos no terminados.
+                    <img src="grafo.png" class="img-fluid rounded float-left img-tam" alt="200" >
+                    <img src="grafo2.jpg" class="img-fluid rounded float-right img-tam" alt="200">
                 </p>
             </div>
     </section>
@@ -37,6 +59,7 @@
                 </p>
             </div>
     </section>
+
     <section id="main">
         <div class="container ">
             <div class="container header">
@@ -58,7 +81,7 @@
         </div>
     </section>
     <footer class="header text-center footer">
-        <h6 class="h6">Instituto Politécnico Nacional</h6>
+        <h5 class="h5">Instituto Politécnico Nacional</h5>
         <h6 class="h6">Escuela Superior de Cómputo</h6>
     </footer>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
