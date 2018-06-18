@@ -7,35 +7,25 @@ Luis Ricardo Tellez Giron Garcia
 3CM3
 18-06-18
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "tiempo.c"
 #include "huffman.c"
-#include "decoder.c"
 
 int main(int argc, char const *argv[]) {
 
     double utime0, stime0, wtime0,utime1, stime1, wtime1; //Variables para medición de tiempos
     int i; //auxiliar para ciclos
-
-    if (argc < 3){
-        printf("Faltan argumentos Ej. archivo 1/2 comprimir/descomprimir\n");
+    if (argc < 4) {
+        printf("Faltan argumentos: Ej. e|d [e - codificar|d- decodificar] nombre_original nombre_codificado\n");
         exit(1);
     }
+    init();
+    if (strcmp(argv[1], "e") == 0)
+        encode(argv[2], argv[3]);
+    else if (strcmp(argv[1], "d") == 0)
+        decode(argv[2], argv[3]);
 
-    //******************************************************************
-    //Iniciar el conteo del tiempo para las evaluaciones de rendimiento
-    //******************************************************************
-    uswtime(&utime0, &stime0, &wtime0);
-
-    int opcion = atoi(argv[2]);
-    if(opcion == 1){
-        comprimir_archivo(argv[1]);
-    }
-    else if(opcion == 2){
-        decodificar_archivo(argv[1]);
-    }
+    destruir();
+    return 0;
     //******************************************************************
 
     //******************************************************************

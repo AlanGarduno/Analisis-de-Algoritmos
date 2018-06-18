@@ -1,226 +1,361 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "huffman.h"
 
-void inicializar_variables() {
-    bits_buffer = 0;
-    memset(buffer_salida, 0, 256);
+/*Variables globales*/
+int num_active = 0;
+int num_alphabets = 256;
+int *frecuencia = NULL;
+unsigned int tam_orginal = 0;
+
+Nodo *nodes = NULL;
+int num_nodos = 0;
+int *hoja_index = NULL;
+int *padre_index = NULL;
+
+int free_index = 1;
+
+int *stack;
+int stack_top;
+
+unsigned char buffer[TAM_MAX];
+int bits_in_buffer = 0;
+int current_bit = 0;
+
+int eof_input = 0;
+/*Funcion: determinar_frecuencia
+Recibe: puntero a descriptor de archivo
+Devuelve:
+Determina la frecuencia de un carcater c dentro de un archivo
+Solo conseidera cractres con valor ASCII*/
+void determinar_frecuencia(FILE *f){
+  int c;
+  while((c = fgetc(f) != EOF)){
+    ++frecuencia[c];
+    ++original_size;
+  }
+  for(c = 0; c < num_alphabets; c++)
+    if(frecuencia[c] > 0)
+      num_active++;
+}
+/*Funcion init
+Recibe:
+Devuelve:
+Inicializa los valores del arreglo deonde se guardan las frecuencias
+y el indecide de las hojas del arbol codificador
+*/
+void init(){
+  frecuencia = (int*)calloc(2*num_alphabets,sizeof(int));
+  hoja_index = frecuencia + num_alphabets -1;
 }
 
-ssize_t obtener_tam_archivo(char *archivo) {
-    struct stat datos_archivo;
-    stat(archivo, &datos_archivo);
-    return datos_archivo.st_size;
+/*Funcion init_arbol
+Recibe:
+Devuelve:
+Reserva memoria para los nodos del arbol codificador
+y calcula el nuemro de nodos padre
+*/
+void init_arbol(){
+  nodes = (Nodo*)calloc(2*num_active,sizeof(Node));
+  padre_index = (int*)calloc(num_active,sizeof(int));
 }
 
-int comprimir_archivo(char *nombre_archivo){
-    int archivo = open(nombre_archivo, O_RDONLY);
-    unsigned char buffer_entrada[256];
-    /*
-    * Arreglo donde contaremos las frecuencias de nuestros 256
-    * simbolos mas un simbolo para identificar el final de
-    * archivo en el archivo comprimido
-    */
-    unsigned long long frecuencias[257] = {0};
+/*Funcion destruir
+Recibe:
+Devuelve:
+Libera la memoria reservada
+*/
+void destruir(){
+  free(padre_index);
+  free(frecuencia);
+  free(nodes);
+}
 
-    // El ultimo elemento es el de final de archivo
-    frecuencias[256] = 1;
+/*
+Funcion add_nodo
+Recibe: int index que es el indice donde se va a agregar
+int weight el dato que se va a guardar en este caso es la frecuencia
+Devuelve: El indice del nodo agregado
+Agrega in nodo al arbol
+*/
+int add_nodo(int index, int weight){
+  int i = num_nodos++;
+  while (i > 0 && nodes[i].weight > weight) {
+    memcpy(&nodes[i+1], &nodes[i], sizeof(Node));
+    if(nodes[i].index < 0)
+      ++hoja_index[-nodes[i].index];
+    else
+      ++padre_index[nodes[i].index];
 
-    int leidos = 0;
-    ssize_t total = 0;
+    --i;
+  }
 
-    //Leemos el archivo por bloques
-    while ((leidos = read(archivo, buffer_entrada, 256)) > 0){
-        // Contamos las frecuencias de los bytes leidos en el bloque
-        for (unsigned long long i = 0; i<leidos; i++)
-            frecuencias[buffer_entrada[i]]++;
-        total += leidos;
+  i++;
+  nodes[i].index = index;
+  nodes[i].weight = weight;
+  if(index < 0)
+    hoja_index[-index] = i;
+  else
+    padre_index[index] = i;
+
+  return i;
+}
+
+/*Funcion add_hoja
+Recibe:
+Devuelve:
+Funcion complementaria a add_node*/
+void add_hoja(){
+  int i, freq;
+  for(i = 0; i < num_alphabets; i++ ){
+    freq = frecuencia[i];
+    if(freq > 0)
+      add_nodo(-(i+1), freq);
+  }
+}
+/*Funcion build_tree
+Recibe:
+Devuelve:
+Contruye el arbol con base al numero de nodos caluclado previamente*/
+void build_tree(){
+  int a,b,index;
+  while (free_index < num_nodos) {
+    a = free_index++;
+    b = free_index++;
+    index = add_nodo(b/2, nodes[a].weight + nodes[b].weight);
+    padre_index[b/2] = index;
+  }
+}
+
+/*Funcion: encode
+Recibe: nombre del archivo a encodear y nombre del archivo de salida
+Retorna: -1 si no se tuvo exito 0 si se tuvo exito*/
+int encode(const char* ifile, const char *ofile){
+  FILE *fin, *fout;
+  if ((fin = fopen(ifile, "rb")) == NULL) {
+      perror("Error: ");
+      return -1;
+  }
+  if ((fout = fopen(ofile, "wb")) == NULL) {
+      perror("Error: ");
+      fclose(fin);
+      return -1;
+  }
+
+  determinar_frecuencia(fin);
+  stack = (int*)calloc(num_active- 1,sizeof(int));
+  init_arbol();
+  add_hoja();
+  write_header(fout);
+  build_tree();
+  fseek(fin,0,SEEK_SET);
+  int c;
+  while ((c = fgetc(fin) != EOF))
+    encode_alphabet(fout,c);
+  flush_buffer(fout);
+  free(stack);
+  fclose(fin);
+  fclose(fout);
+
+  return 0;
+
+}
+/*Funcion encode_alphabet
+Recibe: Puntero a descriptor y caracter c
+Devuelve: */
+void encode_alphabet(FILE *fout, int c){
+  int node_index;
+  stack_top = 0;
+  node_index = hoja_index[c + 1];
+  while(node_index < num_nodos){
+    stack[stack_top++] = node_index % 2;
+    node_index = padre_index[(node_index+1)/2];
+  }
+  while(--stack_top > -1 )
+    write_bit(fout,stack[stack_top]);
+}
+/*Funcion: decode
+Recibe: nombre del archivo a encodear y nombre del archivo de salida
+Retorna: -1 si no se tuvo exito 0 si se tuvo exito*/
+
+int decode(const char* ifile, const char *ofile) {
+    FILE *fin, *fout;
+    if ((fin = fopen(ifile, "rb")) == NULL) {
+        perror("Error: ");
+        return -1;
     }
-    close(archivo);
+    if ((fout = fopen(ofile, "wb")) == NULL) {
+        perror("Error: ");
+        fclose(fin);
+        return -1;
+    }
 
+    if (read_header(fin) == 0) {
+        build_tree();
+        decode_bit_stream(fin, fout);
+    }
+    fclose(fin);
+    fclose(fout);
 
-    // LLenamos nuestra lista
-    Nodo *lista = NULL;
-    for (int i = 0; i < 257; i++)
-        if(frecuencias[i] != 0)
-            lista = Add(lista, frecuencias[i], i);
-
-    lista = crear_arbol(lista);
-    construir_tabla(lista, nombre_archivo);
-    crear_comprimido(nombre_archivo);
     return 0;
 }
 
-void construir_tabla(Nodo *lista, char *archivo) {
-    char camino[2000];
-    FILE *f;
-    f = fopen("tabla_codificacion.txt", "w");
-    memset(camino, '\0', sizeof(camino));
-    llenar_tabla(lista, camino, 0, f);
-    fclose(f);
-}
 
+/*Funcion: decode_bit_stream
+Recibe: nombre del archivo a encodear y nombre del archivo de salida
+Algortmo de huffman para decodificar bits*/
 
-void crear_comprimido(char *nombre_archivo) {
-    int archivo = open(nombre_archivo, O_RDONLY);
-    int f_comprimido = open("comprimido.txt", O_WRONLY|O_CREAT|O_TRUNC, 0644);
-    int leidos = 0;
-    unsigned char buffer[256];
-    while ((leidos = read(archivo, buffer, 256)) > 0){
-        for (unsigned long long i = 0; i < leidos; i++)
-            for (int j = 0; j< strlen(VALORES[buffer[i]]); j++)
-                escribir_bit(f_comprimido, VALORES[buffer[i]][j]-'0');
-    }
-    /*
-    * Metemos la secuencia de bits que terminan el archivo
-    * al buffer antes de escribirlo en el archivo
-    */
-    for (int j = 0; j< strlen(VALORES[256]); j++)
-        escribir_bit(f_comprimido, VALORES[256][j]-'0');
-
-    // Metemos los bits que no llenaron un buffer
-    if (bits_buffer < 256 << 3)
-        write(f_comprimido, buffer_salida, (bits_buffer / 8)+1);
-
-    close(f_comprimido);
-    close(archivo);
-}
-
-
-void llenar_tabla(Nodo *arbol, char *camino, int longitud, FILE *f) {
-    if(arbol->izq== NULL && arbol->der == NULL) {
-        return;
-    }
-    char camino_izq[2000];
-    char camino_der[2000];
-    memset(camino_izq, '\0', sizeof(camino_izq));
-    memset(camino_der, '\0', sizeof(camino_der));
-    strcpy(camino_izq, camino);
-    strcpy(camino_der, camino);
-    camino_izq[longitud] = '0';
-    camino_der[longitud++] = '1';
-
-    llenar_tabla(arbol->izq, camino_izq, longitud, f);
-    if (arbol->izq->izq == NULL && arbol->izq->der == NULL)
-        agregar_simbolo_tabla(arbol->izq->numero, camino_izq, longitud, f);
-
-    llenar_tabla(arbol->der, camino_der, longitud, f);
-    if (arbol->der->izq == NULL && arbol->der->der == NULL)
-        agregar_simbolo_tabla(arbol->der->numero, camino_der, longitud, f);
-}
-
-void agregar_simbolo_tabla(int numero, char *secuencia, int longitud, FILE *f) {
-    char *string = malloc(sizeof(char) * longitud);
-    strcpy(string, secuencia);
-    VALORES[numero] = string;
-    fprintf(f, "%d %s\n", numero, secuencia);
-}
-
-Nodo *Add(Nodo *inicio, unsigned long long frecuencia, int numero) {
-    Nodo *temp = (struct Nodo*)malloc(sizeof(struct Nodo));
-    temp->numero = numero;
-    temp->frecuencia = frecuencia;
-
-    if (inicio == NULL){
-        temp->siguiente = NULL;
-        return temp;
-    }
-    if (frecuencia < inicio->frecuencia) {
-        temp->siguiente = inicio;
-        return temp;
-    }
-
-     Nodo *prev = inicio;
-     Nodo *aux = inicio->siguiente;
-    while(aux != NULL && (aux->frecuencia < frecuencia)) {
-        prev = aux;
-        aux = aux->siguiente;
-    }
-
-    temp->siguiente = aux;
-    prev->siguiente = temp;
-    return inicio;
-}
-
-void escribir_bit(int f, int bit) {
-    /*Si recibimos un uno lo ponemos y aumentamos nuestro
-    * contador de bits, de lo contrario solo se aumenta
-    * el numero de bits
-    */
-    if (bit){
-        /*
-        * Corrimiento hacia la derecha para ubicarnos en el byte
-        * correcto, compuerta or para que se pueda agregar el bit sin
-        * modificar los bits que ya estaban
-        */
-        buffer_salida[bits_buffer >> 3] |= (0x1 << (7 - bits_buffer % 8));
-    }
-    bits_buffer++;
-    /*
-    * Si ya llenamos el buffer lo escribimos, corrimiento a la izq
-    * para comparar bits y no bytes, limpiamos el buffer y
-    * reiniciamos el contador de bits
-    */
-    if (bits_buffer == 256 << 3) {
-        write(f, buffer_salida, 256);
-        inicializar_variables();
-    }
-}
-
-Nodo *crear_arbol(Nodo *lista) {
-    // Nodos mas pequeños dentro de la lista
-     Nodo *auxiliar2;
-     Nodo *auxiliar;
-
-    // Nodo auxiliar para iterar la lista
-    Nodo *indice = lista;
-    int tomar = 1;
-
-    // Nodo auxiliar para crear nodos internos
-    struct Nodo *nuevo;
-
-    // Clave para identificar un nodo interno
-    int clave = -1;
-
-    while (indice != NULL) {
-        if (tomar) {
-            auxiliar = lista;
-            auxiliar2 = lista->siguiente;
-            nuevo = (struct Nodo*)malloc(sizeof(struct Nodo));
-            nuevo->frecuencia = auxiliar->frecuencia + auxiliar2->frecuencia;
-            nuevo->numero = clave--;
-            nuevo->izq = auxiliar;
-            nuevo->der = auxiliar2;
-            nuevo->siguiente = NULL;
-            if (auxiliar2->siguiente == NULL) {
-                lista = nuevo;
+void decode_bit_stream(FILE *fin, FILE *fout) {
+    int i = 0, bit, node_index = nodes[num_nodes].index;
+    while (1) {
+        bit = read_bit(fin);
+        if (bit == -1)
+            break;
+        node_index = nodes[node_index * 2 - bit].index;
+        if (node_index < 0) {
+            char c = -node_index - 1;
+            fwrite(&c, 1, 1, fout);
+            if (++i == tam_orginal)
                 break;
-            }
-            lista = auxiliar2->siguiente;
-            if (nuevo->frecuencia < lista->frecuencia) {
-                nuevo->siguiente = lista;
-                lista = nuevo;
-                tomar = 1;
-            } else {
-                tomar = 0;
-            }
-            indice = lista;
-        } else {
-            if (indice->siguiente == NULL) {
-                indice->siguiente = nuevo;
-                indice = lista;
-                tomar = 1;
-            }else if (nuevo->frecuencia < indice->siguiente->frecuencia) {
-                nuevo->siguiente = indice->siguiente;
-                indice->siguiente = nuevo;
-                tomar = 1;
-            } else {
-                indice = indice->siguiente;
-                if (indice->siguiente == NULL) {
-                    indice->siguiente = nuevo;
-                    indice = lista;
-                    tomar = 1;
-                }
-            }
+            node_index = nodes[num_nodes].index;
         }
     }
-    return lista;
+}
+
+/*Funcion write_bit
+Recibe: puntero a descriptor de archivo, un bit
+Devuelve: 0 si tuvo exto -1 si no fue asi
+Escribe bit a bit en el archivo de salida*/
+int write_bit(FILE *f, int bit) {
+    if (bits_in_buffer == TAM_MAX << 3) {
+        size_t bytes_written =
+            fwrite(buffer, 1, TAM_MAX, f);
+        if (bytes_written < TAM_MAX && ferror(f))
+            return INVALID_BIT_WRITE;
+        bits_in_buffer = 0;
+        memset(buffer, 0, TAM_MAX);
+    }
+    if (bit)
+        buffer[bits_in_buffer >> 3] |=
+            (0x1 << (7 - bits_in_buffer % 8));
+    ++bits_in_buffer;
+    return 0;
+}
+/*Funcion: flush_buffer
+Recibe: Puntero a descriptor de archivo
+Devuelve: 0 si tuvo exito
+Limpia el buffer de escritura en archivos*/
+int flush_buffer(FILE *f) {
+    if (bits_in_buffer) {
+        size_t bytes_written =
+            fwrite(buffer, 1,
+                (bits_in_buffer + 7) >> 3, f);
+        if (bytes_written < TAM_MAX && ferror(f))
+            return -1;
+        bits_in_buffer = 0;
+    }
+    return 0;
+}
+/*Funcion read_bit
+Recibe: puntero a descriptor de archivo
+Devuelve: el bit leido si tuvo exto -1 si no fue asi
+lee bit a bit en el archivo de salida*/
+int read_bit(FILE *f) {
+    if (current_bit == bits_in_buffer) {
+        if (eof_input)
+            return -1;
+        else {
+            size_t bytes_read =
+                fread(buffer, 1, TAM_MAX, f);
+            if (bytes_read < TAM_MAX) {
+                if (feof(f))
+                    eof_input = 1;
+            }
+            bits_in_buffer = bytes_read << 3;
+            current_bit = 0;
+        }
+    }
+
+    if (bits_in_buffer == 0)
+        return -2;
+    int bit = (buffer[current_bit >> 3] >>
+        (7 - current_bit % 8)) & 0x1;
+    ++current_bit;
+    return bit;
+}
+/*Funcion: write_header
+Recibe: puntero al descriptor del archivo
+Devuelve: 0 si tuvo exito -1 si no fue asi*/
+int write_header(FILE *f) {
+     int i, j, byte = 0,
+         size = sizeof(unsigned int) + 1 +
+              num_active * (1 + sizeof(int));
+     unsigned int weight;
+     char *buffer = (char *) calloc(size, 1);
+     if (buffer == NULL)
+         return -1;
+
+     j = sizeof(int);
+     while (j--)
+         buffer[byte++] =
+             (original_size >> (j << 3)) & 0xff;
+     buffer[byte++] = (char) num_active;
+     for (i = 1; i <= num_active; ++i) {
+         weight = nodes[i].weight;
+         buffer[byte++] =
+             (char) (-nodes[i].index - 1);
+         j = sizeof(int);
+         while (j--)
+             buffer[byte++] =
+                 (weight >> (j << 3)) & 0xff;
+     }
+     fwrite(buffer, 1, size, f);
+     free(buffer);
+     return 0;
+}
+/*Funcion: read_header
+Recibe: puntero al descriptor del archivo
+Devuelve: 0 si tuvo exito -1 si no fue asi*/
+
+int read_header(FILE *f) {
+     int i, j, byte = 0, size;
+     size_t bytes_read;
+     unsigned char buff[4];
+
+     bytes_read = fread(&buff, 1, sizeof(int), f);
+     if (bytes_read < 1)
+         return -1;
+     byte = 0;
+     original_size = buff[byte++];
+     while (byte < sizeof(int))
+         original_size =
+             (original_size << (1 << 3)) | buff[byte++];
+
+     bytes_read = fread(&num_active, 1, 1, f);
+     if (bytes_read < 1)
+         return -1;
+
+     init_arbol();
+
+     size = num_active * (1 + sizeof(int));
+     unsigned int weight;
+     char *buffer = (char *) calloc(size, 1);
+     if (buffer == NULL)
+         return -1;
+     fread(buffer, 1, size, f);
+     byte = 0;
+     for (i = 1; i <= num_active; ++i) {
+         nodes[i].index = -(buffer[byte++] + 1);
+         j = 0;
+         weight = (unsigned char) buffer[byte++];
+         while (++j < sizeof(int)) {
+             weight = (weight << (1 << 3)) |
+                 (unsigned char) buffer[byte++];
+         }
+         nodes[i].weight = weight;
+     }
+     num_nodes = (int) num_active;
+     free(buffer);
+     return 0;
 }

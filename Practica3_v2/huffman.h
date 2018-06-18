@@ -1,50 +1,40 @@
-/*Cabecera de la estructura del algortimo de huffman*/
-
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
-
 /*
-* Tam. maximo de bytes que se van a leer y escribir
+ESCOM-IPN
+Practica 3: Codificacion voraz de huffman
+Analisis de Algoritmos
+Alan Garduño Velazquez
+Luis Ricardo Tellez Giron Garcia
+3CM3
+18-06-18
 */
-int bits_buffer;
-unsigned char buffer_salida[256];
-const unsigned char *VALORES[257];
+#define TAM_MAX 256 //tamaño maximo de los buffer
+#define INVALID_BIT_WRITE  -1
+#define INVALID_BIT_READ -1 //Valor para los bit invalidos
 
+#define FALLO 1
+#define EXITO 0
+#define ERROR_APERTURA_ARCHIVO -1
+#define FIN_ARCHIVO -1
+#define NO_MEMORY -1
 
-/*Estrctura que nos funcionara como nodo tanto de un TAD arbol binario como de un TAD lista SE*/
-typedef struct Nodo {
-    int numero;
-    unsigned long long frecuencia;
-    struct Nodo *izq;
-    struct Nodo *der;
-    struct Nodo *siguiente;
+typedef struct Nodo{
+    int index;
+    unsigned int weight;
 }Nodo;
 
-/*
-* Funcion que inserta un nodo de forma ordenada en una lista,
-* recibe una lista, el valor a insertar
-* y devuelve una nueva lista ordenada
-*/
- Nodo *Add(Nodo *, unsigned long long, int);
- 
-void construir_tabla(struct Nodo *, char *);
-
-void llenar_tabla(struct Nodo *, char *, int, FILE *);
-
-void agregar_simbolo_tabla(int, char *, int, FILE *);
-
-ssize_t obtener_tam_archivo(char *archivo);
-
-Nodo *crear_arbol(struct Nodo *);
-
-void escribir_bit(int, int);
-
-int comprimir_archivo(char *);
-
-void crear_comprimido(char *);
+void determinar_frecuencia(FILE *f);
+void init();
+void init_arbol();
+void destruir();
+int add_nodo(int index, int weight);
+void add_hoja();
+void build_tree();
+int encode(const char* ifile, const char *ofile);
+void encode_alphabet(FILE *fout, int c);
+int decode(const char* ifile, const char *ofile);
+void decode_bit_stream(FILE *fin, FILE *fout);
+int write_bit(FILE *f, int bit);
+int flush_buffer(FILE *f);
+int read_bit(FILE *f);
+int write_header(FILE *f);
+int read_header(FILE *f)
